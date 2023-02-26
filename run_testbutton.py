@@ -5,8 +5,8 @@ import neopixel
 import time
 import subprocess
 import os
-from src.utils.display_images import display_photo, display_smile, display_loading, display_start
-from src.utils.neopixel import leds_purple_loading,upper_button_green,leds_red_charger, make_led_flash, turn_leds_off
+from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
+from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_red_charger, make_led_flash, turn_leds_off, leds_purple_charger
 from src.utils.photos import kill_gphoto2_at_start, remove_temp_photos_at_start, kill_feh
 
 #set up board and display 
@@ -22,7 +22,7 @@ remove_temp_photos_at_start()
 turn_leds_off(pixels)
 kill_feh()
 display_start()
-upper_button_green(pixels)
+upper_button_purple(pixels)
 
 
 while True: # Run forever
@@ -31,18 +31,18 @@ while True: # Run forever
         # take 3 photos 
         #tick = 0
         time_now = time.strftime("%d-%H:%M:%S:")
-        display_smile()
         flag_all_photos = True 
         number_of_photos_in_folder = 0 
         number_of_photos_in_folder_old = 0
         while number_of_photos_in_folder < 3:
             name_photo = "photo"+ str(number_of_photos_in_folder)
+            display_smile()
             leds_red_charger(pixels) # leds do loop 
             # take photo
             print("CLICK!")
             make_led_flash(pixels)
 
-          
+            display_empty()
             subprocess.check_output("gphoto2  --capture-image-and-download --filename /home/pi/photobooth_images/"+name_photo+".jpg", 
                                                 stderr=subprocess.STDOUT, shell=True)
             
@@ -60,27 +60,27 @@ while True: # Run forever
         
         print("about to call make_collage script...")
 
-        display_loading()
-        print('done display')
-        leds_purple_loading(pixels)
-        subprocess.call("sudo bash /home/pi/RPi-photobooth/photo_montage33.sh", shell=True)
+        display_empty()
+        
+        subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_print.sh", shell=True)
+        leds_purple_charger(pixels)
         print("diplay photo...")
-        time.sleep(1)
-        subprocess.call("sudo bash /home/pi/RPi-photobooth/photo_montage_screen.sh", shell=True)
+        time.sleep(3)
+        subprocess.call("sudo bash /home/pi/RPi-photobooth/src/photo_montage_screen.sh", shell=True)
         gpout = display_photo()
         print(gpout)
-        print("Errase photos to clean folder...")
+        print("Erase photos to clean folder...")
         subprocess.call("rm /home/pi/photobooth_images/* ", shell=True)
-        leds_purple_loading(pixels)
-        time.sleep(60)
+        #leds_purple_loading(pixels)
+        time.sleep(20)
 
         try: 
             subprocess.call("sudo pkill feh", shell=True)
         except:
             print('end of program')
         print('ready to go again')
-        subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/Start2_out.jpg &", shell=True)
+        subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/StartHere_out.jpg &", shell=True)
         turn_leds_off(pixels)
-        upper_button_green(pixels)
+        upper_button_purple(pixels)
 
 

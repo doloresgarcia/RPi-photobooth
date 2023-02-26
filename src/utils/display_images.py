@@ -22,7 +22,11 @@ def display_loading():
     return gpout
 
 def display_start():
-    subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/Start2_out.jpg &", shell=True)
+    subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/StartHere_out.jpg &", shell=True)
+
+def display_empty():
+    subprocess.call("sudo pkill feh", shell=True)
+    subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/Empty_out.jpg &", shell=True)
 
 
 
