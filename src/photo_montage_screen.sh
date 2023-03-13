@@ -4,7 +4,7 @@ convert "/home/pi/photobooth_images/photo0.jpg" -resize 237x190^ -gravity center
 convert "/home/pi/photobooth_images/photo1.jpg" -resize 237x190^ -gravity center -quality 90 "/home/pi/photobooth_images/photo1.jpg"
 convert "/home/pi/photobooth_images/photo2.jpg" -resize 237x190^ -gravity center -quality 90 "/home/pi/photobooth_images/photo2.jpg"
 TEMPLATE_FILE="/home/pi/RPi-photobooth/images_wait/Print2.jpg"
-FINAL_FILE="/home/pi/final_screen.jpg"
+FINAL_FILE="/home/pi/RPi-photobooth/outputs_final/final_screen.jpg"
 
 TOP_LEFT_FILE="/home/pi/photobooth_images/photo0.jpg"
 convert "$TEMPLATE_FILE" "$TOP_LEFT_FILE" -geometry +15+75 -composite "$FINAL_FILE"

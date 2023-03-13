@@ -5,7 +5,9 @@ import neopixel
 import time
 import subprocess
 import os
+import signal
 from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
+from src.utils.display_images import handler
 from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off
 from src.utils.neopixel import leds_purple_charger, lower_button_blue
 from src.utils.photos import kill_gphoto2_at_start, remove_temp_photos_at_start, kill_feh, remove_final_ifany
@@ -63,6 +65,8 @@ while True: # Run forever
         # at this point the screen is showing the last photo with the new print buttons and the leds are off
         upper_button_purple(pixels)
         lower_button_blue(pixels)
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(30)
 
 
     if GPIO.input(INPUT_PRINT) ==  GPIO.LOW:

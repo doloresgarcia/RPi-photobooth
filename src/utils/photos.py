@@ -22,3 +22,9 @@ def kill_feh():
         subprocess.check_output("sudo pkill feh", stderr=subprocess.STDOUT, shell=True,)
     except:
         print('first pic')
+
+def remove_final_ifany():
+    try:
+        subprocess.check_output("rm /home/pi/RPi-photobooth/outputs_final/final_print/* ", stderr=subprocess.STDOUT,shell=True)
+    except subprocess.CalledProcessError as e:
+        output = e.output
