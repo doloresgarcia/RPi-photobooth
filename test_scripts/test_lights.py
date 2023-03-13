@@ -5,8 +5,11 @@ import neopixel
 import time
 import subprocess
 import os
-from functions import leds_red_charger, make_led_flash, display_photo, turn_leds_off, display_smile, display_loading
-from functions import leds_purple_loading, display_ready
+import sys
+sys.path.insert(0, '../src')
+from src.utils.neopixel import turn_leds_off
+from src.utils.neopixel import leds_smooth_charger
 pixels = neopixel.NeoPixel(board.D18, 120, pixel_order=neopixel.RGBW)
 
 turn_leds_off(pixels)
+leds_smooth_charger(pixels)

@@ -1,0 +1,15 @@
+#!/bin/bash
+mogrify -resize 660x660 /home/pi/photobooth/*.jpg
+TEMPLATE_FILE="./4x4.png"
+FINAL_FILE="final.jpg"
+
+TOP_LEFT_FILE="/home/pi/photobooth_images/photobooth120448"
+convert "$TEMPLATE_FILE" "$TOP_LEFT_FILE" -geometry +40+40 -composite "$FINAL_FILE"
+
+TOP_RIGHT_FILE="./${WORKING_DIR}/image_2_small.jpg"
+convert "$FINAL_FILE" "$TOP_RIGHT_FILE" -geometry +740+40 -composite "$FINAL_FILE"
+
+BOT_LEFT_FILE="./${WORKING_DIR}/image_3_small.jpg"
+convert "$FINAL_FILE" "$BOT_LEFT_FILE" -geometry +40+740 -composite "$FINAL_FILE"
+
+

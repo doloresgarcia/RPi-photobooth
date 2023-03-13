@@ -6,7 +6,7 @@ import time
 import subprocess
 import os
 from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
-from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off
+from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off, leds_smooth_charger, leds_blue_charger_smooth
 from src.utils.neopixel import leds_purple_charger, lower_button_blue
 from src.utils.photos import kill_gphoto2_at_start, remove_temp_photos_at_start, kill_feh, remove_final_ifany
 
@@ -27,7 +27,7 @@ turn_leds_off(pixels)
 kill_feh()
 display_start()
 upper_button_purple(pixels)
-
+leds_blue_charger_smooth(pixels)
 while True: # Run forever
     if GPIO.input(INPUT_TAKE_PHOTO) ==  GPIO.LOW:
         print('the button has been clicked and the sequence of 3 photos starts')

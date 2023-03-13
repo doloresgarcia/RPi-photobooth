@@ -8,7 +8,7 @@ import os
 import signal
 from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
 from src.utils.display_images import handler
-from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off
+from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off, leds_smooth_charger, leds_blue_charger_smooth
 from src.utils.neopixel import leds_purple_charger, lower_button_blue
 from src.utils.photos import kill_gphoto2_at_start, remove_temp_photos_at_start, kill_feh, remove_final_ifany
 
@@ -31,6 +31,7 @@ display_start()
 upper_button_purple(pixels)
 
 while True: # Run forever
+    signal.alarm(0)
     if GPIO.input(INPUT_TAKE_PHOTO) ==  GPIO.LOW:
         print('the button has been clicked and the sequence of 3 photos starts')
         remove_final_ifany() # remove the final in case there is one in the folder
@@ -40,7 +41,7 @@ while True: # Run forever
         while number_of_photos_in_folder < 3:
             name_photo = "photo"+ str(number_of_photos_in_folder)
             display_smile()
-            leds_blue_charger(pixels) 
+            leds_blue_charger_smooth(pixels) 
             print("CLICK!")
             make_led_flash(pixels)
             display_empty()
@@ -57,7 +58,7 @@ while True: # Run forever
         display_empty()
         subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_print.sh", shell=True)
         #subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_screen.sh", shell=True)
-        leds_purple_charger(pixels)
+        leds_smooth_charger(pixels)
         gpout = display_photo()
         print("Erase photos to clean folder...")
         subprocess.call("rm /home/pi/photobooth_images/* ", shell=True)
@@ -66,7 +67,7 @@ while True: # Run forever
         upper_button_purple(pixels)
         lower_button_blue(pixels)
         signal.signal(signal.SIGALRM, handler)
-        signal.alarm(30)
+        signal.alarm(60)
 
 
     if GPIO.input(INPUT_PRINT) ==  GPIO.LOW:
