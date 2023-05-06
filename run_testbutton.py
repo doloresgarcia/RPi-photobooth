@@ -19,15 +19,15 @@ GPIO.setup(INPUT_TAKE_PHOTO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(INPUT_PRINT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 output = None
 os.environ['DISPLAY']=':0'  
-
 #checks at start
 kill_gphoto2_at_start()
 remove_temp_photos_at_start()
+print('turning leds off')
 turn_leds_off(pixels)
 kill_feh()
 display_start()
 upper_button_purple(pixels)
-leds_blue_charger_smooth(pixels)
+
 while True: # Run forever
     if GPIO.input(INPUT_TAKE_PHOTO) ==  GPIO.LOW:
         print('the button has been clicked and the sequence of 3 photos starts')
@@ -35,18 +35,30 @@ while True: # Run forever
         time_now = time.strftime("%d-%H:%M:%S:")
         number_of_photos_in_folder = 0 
         number_of_photos_in_folder_old = 0
+        tries = 0
+        flag_photo_to_show = False
         while number_of_photos_in_folder < 3:
             name_photo = "photo"+ str(number_of_photos_in_folder)
-            display_smile()
+            if tries ==0:
+                display_smile()
+            elif flag_photo_to_show == True:
+                display_smile() # change this to display smile with photo collated
+                flag_photo_to_show = False 
+            elif flag_photo_to_show == False and tries>0:
+                display_smile()  # maybe this could display a text saying 'you are too close, step back'
+
             leds_blue_charger(pixels) 
             print("CLICK!")
             make_led_flash(pixels)
             display_empty()
             subprocess.check_output("gphoto2  --capture-image-and-download --filename /home/pi/photobooth_images/"+name_photo+".jpg", 
                                                 stderr=subprocess.STDOUT, shell=True)
+            tries = tries + 1
             number_of_photos_in_folder = len(os.listdir('/home/pi/photobooth_images/'))
+            print(number_of_photos_in_folder)
             turn_leds_off(pixels) 
             if number_of_photos_in_folder>number_of_photos_in_folder_old:
+                flag_photo_to_show = True
                 number_of_photos_in_folder_old += 1
                 gpout = subprocess.check_output("scp  /home/pi/photobooth_images/"+name_photo+".jpg"+" " +"/home/pi/copies_full_res/"+time_now+name_photo+".jpg",  #save full res photo 
                                             stderr=subprocess.STDOUT, shell=True)

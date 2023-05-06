@@ -5,7 +5,7 @@ import os
 
 def kill_gphoto2_at_start():
     try: # if gphoto2 was already open kill it 
-        output = subprocess.check_output("kill -9 $(ps aux | grep gphoto | grep -v grep | tr -s ' ' | cut -d' ' -f2)", 
+        output = subprocess.check_output("sudo kill -9 $(ps aux | grep gphoto | grep -v grep | tr -s ' ' | cut -d' ' -f2)", 
                                                 stderr=subprocess.STDOUT, shell=True)
     except subprocess.CalledProcessError as e:
         output = e.output

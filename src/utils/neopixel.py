@@ -18,13 +18,15 @@ def leds_blue_charger(pixels):
 
     for i in all_pixels_ordered:
         pixels[i]=(0,0, 0, 0)
-        sleep(10.0/72.0)
+        sleep(8.0/72.0) # this happens during 8 seconds
 
 def leds_purple_loading(pixels):
+    pixels.auto_write=True
     pixels.fill((0, 255, 255, 0))
 
 
 def turn_leds_off(pixels):
+    pixels.auto_write=True
     pixels.fill((0, 0, 0, 0))
 
 def make_led_flash(pixels):
@@ -32,12 +34,14 @@ def make_led_flash(pixels):
 
 def upper_button_purple(pixels):
     # 72,73,0
+    pixels.auto_write=True
     list_of_pixels = [72,73]
 
     for index,el in enumerate(list_of_pixels):
         pixels[el]=(0,150, 150, 0)
 
 def lower_button_blue(pixels):
+    pixels.auto_write=True
     list_of_pixels = [2,3]
     for index,el in enumerate(list_of_pixels):
         pixels[el]=(0,0, 150, 0)
@@ -73,7 +77,7 @@ def leds_smooth_charger(pixels):
     for x in range(1,10):
         for t in range(1, 100):
             for i in all_pixels_ordered:
-                pixels[(i + head) % nb_leds] = (0, max_brightness*brightness[i], 0, 0)
+                pixels[(i + head) % nb_leds] = (0, max_brightness*brightness[i], max_brightness*brightness[i], 0)
             pixels.show()
             head -= 1
             sleep(2.2/72.0)
@@ -102,3 +106,4 @@ def leds_blue_charger_smooth(pixels):
         #sleep(10.0/72.0)
 
     pixels.auto_write=True
+

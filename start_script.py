@@ -25,14 +25,15 @@ os.environ['DISPLAY']=':0'
 #checks at start
 kill_gphoto2_at_start()
 remove_temp_photos_at_start()
+print('turning leds off')
 turn_leds_off(pixels)
 kill_feh()
 display_start()
 upper_button_purple(pixels)
 
 while True: # Run forever
-    signal.alarm(0)
     if GPIO.input(INPUT_TAKE_PHOTO) ==  GPIO.LOW:
+        signal.alarm(0)
         print('the button has been clicked and the sequence of 3 photos starts')
         remove_final_ifany() # remove the final in case there is one in the folder
         time_now = time.strftime("%d-%H:%M:%S:")
@@ -45,7 +46,8 @@ while True: # Run forever
             print("CLICK!")
             make_led_flash(pixels)
             display_empty()
-            subprocess.check_output("gphoto2  --capture-image-and-download --filename /home/pi/photobooth_images/"+name_photo+".jpg", 
+            kill_gphoto2_at_start()
+            subprocess.check_output("sudo gphoto2  --capture-image-and-download --filename /home/pi/photobooth_images/"+name_photo+".jpg", 
                                                 stderr=subprocess.STDOUT, shell=True)
             number_of_photos_in_folder = len(os.listdir('/home/pi/photobooth_images/'))
             turn_leds_off(pixels) 
@@ -68,9 +70,11 @@ while True: # Run forever
         lower_button_blue(pixels)
         signal.signal(signal.SIGALRM, handler)
         signal.alarm(60)
+        
 
 
     if GPIO.input(INPUT_PRINT) ==  GPIO.LOW:
+        signal.alarm(0)
         #print the last photo stored in the final
         #check if the final exists 
         if len(os.listdir('/home/pi/RPi-photobooth/outputs_final/final_print'))>0:
