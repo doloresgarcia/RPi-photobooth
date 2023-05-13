@@ -9,9 +9,9 @@ import os
 
 os.environ['DISPLAY']=':0'
 
-gpout = subprocess.check_output("sudo convert -rotate '-90' /home/pi/RPi-photobooth/images_wait/StartHere_instructions.jpg /home/pi/RPi-photobooth/images_wait/StartHere_instructions_out.jpg", 
+gpout = subprocess.check_output("sudo convert -rotate '-90' /home/pi/RPi-photobooth/images_wait/photoalmostready.jpg /home/pi/RPi-photobooth/images_wait/photoalmostready_out.jpg", 
                                             stderr=subprocess.STDOUT, shell=True)
-subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/StartHere_instructions_out.jpg  &", shell=True)
+subprocess.call("feh -F /home/pi/RPi-photobooth/images_wait/photoalmostready_out.jpg  &", shell=True)
 #gpout = subprocess.check_output("unclutter -idle 0", 
 #                                            stderr=subprocess.STDOUT, shell=True)
 sleep(60)

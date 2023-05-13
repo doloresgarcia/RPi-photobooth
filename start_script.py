@@ -6,7 +6,7 @@ import time
 import subprocess
 import os
 import signal
-from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
+from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty, display_int_photo_bricks, display_int_photo_next_photo, display_outfocus, display_almostready
 from src.utils.display_images import handler
 from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off, leds_smooth_charger, leds_blue_charger_smooth
 from src.utils.neopixel import leds_purple_charger, lower_button_blue
@@ -41,7 +41,8 @@ while True: # Run forever
         number_of_photos_in_folder_old = 0
         while number_of_photos_in_folder < 3:
             name_photo = "photo"+ str(number_of_photos_in_folder)
-            display_smile()
+            if number_of_photos_in_folder ==0:
+                display_smile()
             leds_blue_charger_smooth(pixels) 
             print("CLICK!")
             make_led_flash(pixels)
@@ -52,12 +53,19 @@ while True: # Run forever
             number_of_photos_in_folder = len(os.listdir('/home/pi/photobooth_images/'))
             turn_leds_off(pixels) 
             if number_of_photos_in_folder>number_of_photos_in_folder_old:
+                if number_of_photos_in_folder==3:
+                    display_int_photo_bricks(number_of_photos_in_folder-1)
+                else:
+                    display_int_photo_next_photo(number_of_photos_in_folder-1)
                 number_of_photos_in_folder_old += 1
                 gpout = subprocess.check_output("scp  /home/pi/photobooth_images/"+name_photo+".jpg"+" " +"/home/pi/copies_full_res/"+time_now+name_photo+".jpg",  #save full res photo 
                                             stderr=subprocess.STDOUT, shell=True)
+            else:
+                display_outfocus() # could be changed to display you are too close message
+
 
         print("about to call make_collage script...")
-        display_empty()
+        display_almostready()
         subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_print.sh", shell=True)
         #subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_screen.sh", shell=True)
         leds_smooth_charger(pixels)

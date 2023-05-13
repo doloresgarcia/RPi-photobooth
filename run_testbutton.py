@@ -5,7 +5,7 @@ import neopixel
 import time
 import subprocess
 import os
-from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty
+from src.utils.display_images import display_photo, display_smile, display_loading, display_start, display_empty, display_int_photo
 from src.utils.neopixel import leds_purple_loading,upper_button_purple,leds_blue_charger, make_led_flash, turn_leds_off, leds_smooth_charger, leds_blue_charger_smooth
 from src.utils.neopixel import leds_purple_charger, lower_button_blue
 from src.utils.photos import kill_gphoto2_at_start, remove_temp_photos_at_start, kill_feh, remove_final_ifany
@@ -35,38 +35,29 @@ while True: # Run forever
         time_now = time.strftime("%d-%H:%M:%S:")
         number_of_photos_in_folder = 0 
         number_of_photos_in_folder_old = 0
-        tries = 0
-        flag_photo_to_show = False
         while number_of_photos_in_folder < 3:
             name_photo = "photo"+ str(number_of_photos_in_folder)
-            if tries ==0:
-                display_smile()
-            elif flag_photo_to_show == True:
-                display_smile() # change this to display smile with photo collated
-                flag_photo_to_show = False 
-            elif flag_photo_to_show == False and tries>0:
-                display_smile()  # maybe this could display a text saying 'you are too close, step back'
-
+            display_smile()
             leds_blue_charger(pixels) 
             print("CLICK!")
             make_led_flash(pixels)
             display_empty()
             subprocess.check_output("gphoto2  --capture-image-and-download --filename /home/pi/photobooth_images/"+name_photo+".jpg", 
                                                 stderr=subprocess.STDOUT, shell=True)
-            tries = tries + 1
             number_of_photos_in_folder = len(os.listdir('/home/pi/photobooth_images/'))
             print(number_of_photos_in_folder)
             turn_leds_off(pixels) 
             if number_of_photos_in_folder>number_of_photos_in_folder_old:
-                flag_photo_to_show = True
+                display_int_photo(number_of_photos_in_folder)
                 number_of_photos_in_folder_old += 1
                 gpout = subprocess.check_output("scp  /home/pi/photobooth_images/"+name_photo+".jpg"+" " +"/home/pi/copies_full_res/"+time_now+name_photo+".jpg",  #save full res photo 
                                             stderr=subprocess.STDOUT, shell=True)
+            else:
+                display_empty() # could be changed to display you are too close message
 
         print("about to call make_collage script...")
         display_empty()
         subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_print.sh", shell=True)
-        #subprocess.Popen("sudo bash /home/pi/RPi-photobooth/src/photo_montage_screen.sh", shell=True)
         leds_purple_charger(pixels)
         gpout = display_photo()
         print("Erase photos to clean folder...")
@@ -88,7 +79,6 @@ while True: # Run forever
             turn_leds_off(pixels)
             upper_button_purple(pixels)
         else:
-
             print('no photo to print')
             kill_feh()
             display_start()
